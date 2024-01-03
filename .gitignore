@@ -3,7 +3,6 @@
 
 # ignore local db changes
 db.sqlite3
-.env
 
 # ignore python compiled objects
 *.pyc
