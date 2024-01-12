@@ -31,6 +31,14 @@ const Question = (props) => {
         props.setSelectedKey('questions');
     }, []);
 
+    useEffect(() => {
+        form.setFieldsValue(record)
+    }, [form, record]);
+    
+    useEffect(() => {
+        form2.setFieldsValue(questionDetail)
+    }, [form2, questionDetail]);
+
     let filter_language = () => {
         if (apiData){
             JSON.parse(apiData?.data[0].all_languages)?.map((name, index) => {
@@ -73,6 +81,11 @@ const Question = (props) => {
             )
         },
         {
+            title: 'Duration',
+            dataIndex: 'duration',
+            key: 'duration',
+        },
+        {
             title: 'Action',
             render: (_, record) => (
                 <>
@@ -80,7 +93,7 @@ const Question = (props) => {
                         <Tooltip placement="topLeft" title="Edit Test">
                             <EditFilled onClick={() => { showEditlModal(record)}}/>
                         </Tooltip>
-                        <Tooltip placement="topLeft" title="Edit Test">
+                        <Tooltip placement="topLeft" title="Delete Test">
                             <DeleteFilled onClick={() => { showDeletelModal(record)}} />
                         </Tooltip>
                     </Space>
@@ -109,7 +122,7 @@ const Question = (props) => {
                     setquestionDetail(response.data); 
                 }   
                 else{
-                    setTestDetails(response.data);      
+                    setTestDetails(response.data);
                 }
             }
         ).catch(reason => message.error(reason));
