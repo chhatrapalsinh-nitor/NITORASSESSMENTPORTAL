@@ -39,6 +39,10 @@ const Question = (props) => {
         form2.setFieldsValue(questionDetail)
     }, [form2, questionDetail]);
 
+    useEffect(() => {
+        form3.setFieldsValue(testDetails)
+    }, [form3, testDetails]);
+
     let filter_language = () => {
         if (apiData){
             JSON.parse(apiData?.data[0].all_languages)?.map((name, index) => {
@@ -120,9 +124,11 @@ const Question = (props) => {
             (response) => {
                 if (record.type == 1){
                     setquestionDetail(response.data); 
+                    setTestDetails(null);
                 }   
                 else{
                     setTestDetails(response.data);
+                    setquestionDetail(null); 
                 }
             }
         ).catch(reason => message.error(reason));
@@ -175,8 +181,21 @@ const Question = (props) => {
             values["program_test_cases"]=program_test_cases
         }
         values["difficulty"] = record.difficulty;
+        const new_values = {
+            ...values, 
+            multiple_options: questionDetail ? values["multiple_options"] :  null,
+            program_test_cases : testDetails ? values["program_test_cases"] : null
+        }
+        if (questionDetail) {
+            delete new_values["program_test_cases"]
+            delete new_values["multiple_options"]["candidate_answers"]
+        }
+        if (testDetails) {
+            delete new_values["multiple_options"]
+            delete new_values["program_test_cases"]["candidate_answers"]
+        }
         triggerFetchData(
-            'add_question/',{"id": record.id, values}
+            'add_question/',{"id": record.id, values :new_values}
         ).then(
             (data) => {
                 message.success('Question Updated Successfully');
